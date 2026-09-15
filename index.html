@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReSource — Campus Academic Resource Network</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f4f5ff',
+                            100: '#e0e4ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#0f172a',
+                            dark: '#090d16'
+                        },
+                        accent: {
+                            emerald: '#10b981',
+                            amber: '#f59e0b',
+                            slate: '#64748b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fafafa;
+        }
+        .classy-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(226, 232, 240, 0.85);
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s ease-in-out;
+        }
+        .classy-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(241, 245, 249, 1);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .tab-btn.active {
+            color: #4f46e5;
+            background-color: #eef2ff;
+            font-weight: 700;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 5px;
+            width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-brand-500 selection:text-white flex flex-col min-h-screen">
+
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none"></div>
+
+    <header class="sticky top-0 z-40 w-full glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Logo -->
+                <button onclick="switchTab('home')" class="flex items-center gap-3 group text-left focus:outline-none">
+                    <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white shadow-md shadow-brand-500/20 group-hover:scale-105 transition duration-200">
+                        <i data-lucide="repeat" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-extrabold tracking-tight text-slate-900">Re<span class="text-brand-600">Source</span></span>
+                        <span class="block text-[10px] font-semibold tracking-wider text-slate-400 uppercase">Give It. Reuse It. Pass It On.</span>
+                    </div>
+                </button>
+
+                <!-- Desktop Tab Navigation -->
+                <nav class="hidden lg:flex items-center gap-1 p-1.5 bg-slate-100/80 rounded-2xl border border-slate-200/60 text-xs font-semibold text-slate-600">
+                    <button onclick="switchTab('home')" id="nav-home" class="tab-btn active px-3.5 py-2 rounded-xl transition duration-150">Home</button>
+                    <button onclick="switchTab('explore')" id="nav-explore" class="tab-btn px-3.5 py-2 rounded-xl transition duration-150">Explore Hub</button>
+                    <button onclick="switchTab('how')" id="nav-how" class="tab-btn px-3.5 py-2 rounded-xl transition duration-150">How It Works</button>
+                    <button onclick="switchTab('trust')" id="nav-trust" class="tab-btn px-3.5 py-2 rounded-xl transition duration-150">Trust & Safety</button>
+                    <button onclick="switchTab('impact')" id="nav-impact" class="tab-btn px-3.5 py-2 rounded-xl transition duration-150">Impact</button>
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn px-3.5 py-2 rounded-xl transition duration-150">Dashboard</button>
+                    <button onclick="switchTab('roadmap')" id="nav-roadmap" class="tab-btn px-3.5 py-2 rounded-xl transition duration-150">Roadmap</button>
+                </nav>
+
+                <!-- Header Action Buttons -->
+                <div class="hidden sm:flex items-center gap-3">
+                    <button onclick="openModal('auth-modal')" class="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 transition">
+                        Log In
+                    </button>
+                    <button onclick="openModal('list-modal')" class="px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-brand-600 shadow-md shadow-brand-500/20 hover:bg-brand-700 hover:-translate-y-0.5 active:translate-y-0 transition flex items-center gap-2">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        List Resource
+                    </button>
+                </div>
+
+                <!-- Mobile Navigation Button -->
+                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white px-4 pt-3 pb-6 space-y-1.5 shadow-lg">
+            <button onclick="switchTab('home'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-slate-700 font-semibold hover:bg-slate-50 text-xs">Home</button>
+            <button onclick="switchTab('problem-solution'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-slate-700 font-semibold hover:bg-slate-50 text-xs">Problem & Solution</button>
+            <button onclick="switchTab('explore'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-slate-700 font-semibold hover:bg-slate-50 text-xs">Explore Hub</button>
+            <button onclick="switchTab('how'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-slate-700 font-semibold hover:bg-slate-50 text-xs">How It Works</button>
+            <button onclick="switchTab('trust'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-slate-700 font-semibold hover:bg-slate-50 text-xs">Trust & Safety</button>
+            <button onclick="switchTab('impact'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-slate-700 font-semibold hover:bg-slate-50 text-xs">Impact Matrix</button>
+            <button onclick="switchTab('dashboard'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-slate-700 font-semibold hover:bg-slate-50 text-xs">Student Dashboard</button>
+            <button onclick="switchTab('roadmap'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-slate-700 font-semibold hover:bg-slate-50 text-xs">Product Roadmap</button>
+            <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
+                <button onclick="openModal('list-modal'); toggleMobileMenu();" class="w-full py-2.5 rounded-xl text-center text-xs font-bold text-white bg-brand-600 flex items-center justify-center gap-2">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    List a Resource
+                </button>
+                <button onclick="openModal('auth-modal'); toggleMobileMenu();" class="w-full py-2.5 rounded-xl text-center text-xs font-semibold text-slate-700 bg-slate-100">
+                    Log In
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        
+        <section id="view-home" class="tab-view space-y-20 py-10 sm:py-16">
+            
+            <!-- Hero Section -->
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center space-y-8">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 border border-brand-100 text-brand-700 text-xs sm:text-sm font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-brand-600"></span>
+                    Verified Student Peer-to-Peer Network
+                </div>
+
+                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.18]">
+                    What you no longer need could be <span class="gradient-text">exactly what a junior needs.</span>
+                </h1>
+
+                <p class="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto font-medium leading-relaxed">
+                    ReSource connects college juniors and seniors to share, sell, exchange, or lend academic resources — making education more affordable and sustainable.
+                </p>
+
+                <!-- Senior -> ReSource -> Junior Visual Diagram -->
+                <div class="p-6 rounded-3xl classy-card max-w-3xl mx-auto bg-gradient-to-r from-slate-900 via-brand-900 to-slate-900 text-white shadow-xl">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+                        <div class="p-4 rounded-2xl bg-white/10 border border-white/10 text-center space-y-1">
+                            <span class="text-3xl">📚</span>
+                            <h4 class="font-bold text-xs">Senior Student</h4>
+                            <p class="text-[11px] text-slate-300">Has unused books & gear</p>
+                        </div>
+                        <div class="flex flex-col items-center justify-center py-2 text-brand-400">
+                            <i data-lucide="repeat" class="w-8 h-8 animate-spin-slow"></i>
+                            <span class="text-[11px] font-bold tracking-widest text-brand-200 mt-1 uppercase">ReSource</span>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-white/10 border border-white/10 text-center space-y-1">
+                            <span class="text-3xl">🎓</span>
+                            <h4 class="font-bold text-xs">Junior Student</h4>
+                            <p class="text-[11px] text-slate-300">Needs affordable materials</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+                    <button onclick="switchTab('explore')" class="w-full sm:w-auto px-7 py-3 rounded-2xl font-bold text-xs text-white bg-brand-600 shadow-xl shadow-brand-500/20 hover:bg-brand-700 transition flex items-center justify-center gap-2">
+                        <i data-lucide="compass" class="w-4 h-4"></i>
+                        Explore Resource Hub
+                    </button>
+                    <button onclick="openModal('list-modal')" class="w-full sm:w-auto px-7 py-3 rounded-2xl font-bold text-xs text-slate-800 bg-white border border-slate-200 shadow-sm hover:bg-slate-50 transition flex items-center justify-center gap-2">
+                        <i data-lucide="plus-circle" class="w-4 h-4 text-brand-600"></i>
+                        List an Item
+                    </button>
+                </div>
+
+                <p class="text-xs font-semibold text-slate-400">
+                    🛡️ Built for students. Powered by students. Zero commission fees.
+                </p>
+            </div>
+
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
+
+                <!-- SECTION 01: Problem & Solution Summary -->
+                <div class="p-8 sm:p-10 rounded-3xl classy-card space-y-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-100 pb-6">
+                        <div class="space-y-1">
+                            <span class="text-xs font-extrabold text-brand-600 uppercase tracking-wider">01. Overview</span>
+                            <h2 class="text-2xl font-extrabold text-slate-900">The Problem & The Campus Solution</h2>
+                        </div>
+                        <p class="text-xs text-slate-500 max-w-md">
+                            Academic resources are expensive, sit idle after exams, and lack a direct campus channel. ReSource connects both sides seamlessly.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="p-5 rounded-2xl bg-red-50/60 border border-red-100 space-y-2">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700 uppercase">Traditional Way</span>
+                            <p class="text-xs text-slate-700 leading-relaxed pt-1">
+                                Juniors spend heavily buying new textbooks online. Seniors leave valuable gear in hostels or dumpsters with no easy way to pass them down.
+                            </p>
+                        </div>
+                        <div class="p-5 rounded-2xl bg-emerald-50/60 border border-emerald-100 space-y-2">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase">ReSource Way</span>
+                            <p class="text-xs text-slate-700 leading-relaxed pt-1">
+                                Verified seniors list unused items to free up space. Juniors find books and tools at direct student prices right on campus.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- REDIRECT BUTTON BELOW SECTION -->
+                    <div class="pt-2 text-right">
+                        <button onclick="switchTab('problem-solution')" class="inline-flex items-center gap-2 text-xs font-bold text-brand-600 hover:text-brand-700 hover:underline">
+                            Explore Full Problem & Solution Deep Dive <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SECTION 02: How It Works Summary -->
+                <div class="p-8 sm:p-10 rounded-3xl classy-card space-y-6">
+                    <div class="space-y-1">
+                        <span class="text-xs font-extrabold text-brand-600 uppercase tracking-wider">02. Workflow</span>
+                        <h2 class="text-2xl font-extrabold text-slate-900">How ReSource Works in 4 Steps</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                            <div class="w-7 h-7 rounded-lg bg-brand-600 text-white font-extrabold text-xs flex items-center justify-center">1</div>
+                            <h4 class="font-bold text-xs text-slate-900">Join ReSource</h4>
+                            <p class="text-[11px] text-slate-500">Sign in with verified student credentials.</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                            <div class="w-7 h-7 rounded-lg bg-brand-600 text-white font-extrabold text-xs flex items-center justify-center">2</div>
+                            <h4 class="font-bold text-xs text-slate-900">List or Search</h4>
+                            <p class="text-[11px] text-slate-500">Post items or filter by subject codes.</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                            <div class="w-7 h-7 rounded-lg bg-brand-600 text-white font-extrabold text-xs flex items-center justify-center">3</div>
+                            <h4 class="font-bold text-xs text-slate-900">Connect Peer</h4>
+                            <p class="text-[11px] text-slate-500">Chat directly or connect on WhatsApp.</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                            <div class="w-7 h-7 rounded-lg bg-brand-600 text-white font-extrabold text-xs flex items-center justify-center">4</div>
+                            <h4 class="font-bold text-xs text-slate-900">Campus Handoff</h4>
+                            <p class="text-[11px] text-slate-500">Meet safely at library or canteen.</p>
+                        </div>
+                    </div>
+
+                    <!-- REDIRECT BUTTON BELOW SECTION -->
+                    <div class="pt-2 text-right">
+                        <button onclick="switchTab('how')" class="inline-flex items-center gap-2 text-xs font-bold text-brand-600 hover:text-brand-700 hover:underline">
+                            View Detailed Step-by-Step Guide <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SECTION 03: Resource Marketplace Preview -->
+                <div class="p-8 sm:p-10 rounded-3xl classy-card space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <span class="text-xs font-extrabold text-brand-600 uppercase tracking-wider">03. Marketplace</span>
+                            <h2 class="text-2xl font-extrabold text-slate-900">Live Campus Listings</h2>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 self-start sm:self-auto">
+                            6 Resources Available Right Now
+                        </span>
+                    </div>
+
+                    <div id="home-marketplace-preview" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Populated dynamically with first 3 resources -->
+                    </div>
+
+                    <!-- REDIRECT BUTTON BELOW SECTION -->
+                    <div class="pt-2 text-right">
+                        <button onclick="switchTab('explore')" class="inline-flex items-center gap-2 text-xs font-bold text-brand-600 hover:text-brand-700 hover:underline">
+                            Open Full Resource Marketplace & Filters <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SECTION 04: Trust & Safety Summary -->
+                <div class="p-8 sm:p-10 rounded-3xl classy-card space-y-6">
+                    <div class="space-y-1">
+                        <span class="text-xs font-extrabold text-brand-600 uppercase tracking-wider">04. Safety</span>
+                        <h2 class="text-2xl font-extrabold text-slate-900">Built Around Campus Trust</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="p-4 rounded-2xl bg-white border border-slate-100 space-y-2">
+                            <i data-lucide="shield-check" class="w-5 h-5 text-brand-600"></i>
+                            <h4 class="font-bold text-xs text-slate-900">College Identity Verification</h4>
+                            <p class="text-[11px] text-slate-500 leading-relaxed">Accounts require university email or roll numbers to block external spammers.</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-white border border-slate-100 space-y-2">
+                            <i data-lucide="map-pin" class="w-5 h-5 text-brand-600"></i>
+                            <h4 class="font-bold text-xs text-slate-900">Safe Campus Exchange Zones</h4>
+                            <p class="text-[11px] text-slate-500 leading-relaxed">Encourages handoffs at high-visibility spots like the central library or college canteen.</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-white border border-slate-100 space-y-2">
+                            <i data-lucide="star" class="w-5 h-5 text-brand-600"></i>
+                            <h4 class="font-bold text-xs text-slate-900">Peer Ratings & Reviews</h4>
+                            <p class="text-[11px] text-slate-500 leading-relaxed">See senior ratings and department details before agreeing on exchanges.</p>
+                        </div>
+                    </div>
+
+                    <!-- REDIRECT BUTTON BELOW SECTION -->
+                    <div class="pt-2 text-right">
+                        <button onclick="switchTab('trust')" class="inline-flex items-center gap-2 text-xs font-bold text-brand-600 hover:text-brand-700 hover:underline">
+                            Read Full Trust & Safety Guidelines <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SECTION 05: Impact Summary -->
+                <div class="p-8 sm:p-10 rounded-3xl bg-slate-900 text-white space-y-6 shadow-2xl">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <span class="text-xs font-extrabold text-emerald-400 uppercase tracking-wider">05. Sustainability</span>
+                            <h2 class="text-2xl font-extrabold">Measurable Campus Impact</h2>
+                        </div>
+                        <span class="text-xs text-slate-400">Prototype Demo Statistics</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+                            <p class="text-2xl font-extrabold text-brand-400">2,500+</p>
+                            <p class="text-[11px] text-slate-300 font-medium">Students Joined</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+                            <p class="text-2xl font-extrabold text-emerald-400">1,200+</p>
+                            <p class="text-[11px] text-slate-300 font-medium">Items Reused</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+                            <p class="text-2xl font-extrabold text-brand-400">₹80,000+</p>
+                            <p class="text-[11px] text-slate-300 font-medium">Student Savings</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+                            <p class="text-2xl font-extrabold text-amber-400">700+</p>
+                            <p class="text-[11px] text-slate-300 font-medium">Books Saved</p>
+                        </div>
+                    </div>
+
+                    <!-- REDIRECT BUTTON BELOW SECTION -->
+                    <div class="pt-2 text-right">
+                        <button onclick="switchTab('impact')" class="inline-flex items-center gap-2 text-xs font-bold text-emerald-400 hover:text-emerald-300 hover:underline">
+                            View Detailed Impact Report & Savings Matrix <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SECTION 06: Student Dashboard Teaser -->
+                <div class="p-8 sm:p-10 rounded-3xl classy-card space-y-6">
+                    <div class="space-y-1">
+                        <span class="text-xs font-extrabold text-brand-600 uppercase tracking-wider">06. Personal Hub</span>
+                        <h2 class="text-2xl font-extrabold text-slate-900">SaaS Student Dashboard</h2>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-slate-900 text-white flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center font-bold text-white text-xs">RS</div>
+                            <div>
+                                <h4 class="font-bold text-sm">Rahul Sharma (Computer Eng. 3rd Year)</h4>
+                                <p class="text-[11px] text-slate-400">Active Listings: 2 • Saved Bookmarks: 1 • Total Savings: ₹1,850</p>
+                            </div>
+                        </div>
+                        <button onclick="switchTab('dashboard')" class="px-4 py-2 rounded-xl bg-white/10 text-white text-xs font-bold hover:bg-white/20 transition">
+                            Manage Dashboard
+                        </button>
+                    </div>
+
+                    <!-- REDIRECT BUTTON BELOW SECTION -->
+                    <div class="pt-2 text-right">
+                        <button onclick="switchTab('dashboard')" class="inline-flex items-center gap-2 text-xs font-bold text-brand-600 hover:text-brand-700 hover:underline">
+                            Go to Full Interactive Student Dashboard <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SECTION 07: Roadmap & Differentiator Summary -->
+                <div class="p-8 sm:p-10 rounded-3xl classy-card space-y-6">
+                    <div class="space-y-1">
+                        <span class="text-xs font-extrabold text-brand-600 uppercase tracking-wider">07. Our Vision</span>
+                        <h2 class="text-2xl font-extrabold text-slate-900">Why ReSource & Future Roadmap</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-600">
+                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                            <h4 class="font-bold text-slate-900 text-xs">Structured vs Chaos</h4>
+                            <p class="leading-relaxed">Replaces chaotic, easily buried WhatsApp group messages with persistent search, course filters, and verified listings.</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                            <h4 class="font-bold text-slate-900 text-xs">5-Phase Rollout</h4>
+                            <p class="leading-relaxed">From single campus resource network (Phase 1) to AI recommendation & multi-university expansion (Phase 5).</p>
+                        </div>
+                    </div>
+
+                    <!-- REDIRECT BUTTON BELOW SECTION -->
+                    <div class="pt-2 text-right">
+                        <button onclick="switchTab('roadmap')" class="inline-flex items-center gap-2 text-xs font-bold text-brand-600 hover:text-brand-700 hover:underline">
+                            View Comparison Table & Phased Roadmap <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="view-problem-solution" class="tab-view hidden py-10 sm:py-16">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 space-y-12">
+                
+                <div class="text-center space-y-3">
+                    <span class="text-xs font-extrabold text-brand-600 uppercase tracking-wider">The Academic Dilemma</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900">The resources already exist. They're just not connected.</h2>
+                    <p class="text-xs sm:text-sm text-slate-500 max-w-2xl mx-auto">
+                        Every semester, thousands of students buy identical books while thousands of seniors let theirs collect dust.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-6 rounded-2xl classy-card space-y-2">
+                        <div class="w-8 h-8 rounded-xl bg-red-100 text-red-600 flex items-center justify-center font-bold text-xs">01</div>
+                        <h3 class="font-bold text-slate-900 text-sm">Expensive Resources</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            New students spend thousands of rupees on single-use textbooks, engineering drafting tools, and calculators for 1-2 semesters.
+                        </p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl classy-card space-y-2">
+                        <div class="w-8 h-8 rounded-xl bg-red-100 text-red-600 flex items-center justify-center font-bold text-xs">02</div>
+                        <h3 class="font-bold text-slate-900 text-sm">Wasted Material</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Seniors pass their exams and have high-quality notes, lab equipment, and question banks sitting forgotten in hostel cupboards.
+                        </p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl classy-card space-y-2">
+                        <div class="w-8 h-8 rounded-xl bg-red-100 text-red-600 flex items-center justify-center font-bold text-xs">03</div>
+                        <h3 class="font-bold text-slate-900 text-sm">Storage & Disposal Issues</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Students graduating or shifting rooms struggle to store heavy academic gear and end up throwing away good study material.
+                        </p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl classy-card space-y-2">
+                        <div class="w-8 h-8 rounded-xl bg-red-100 text-red-600 flex items-center justify-center font-bold text-xs">04</div>
+                        <h3 class="font-bold text-slate-900 text-sm">No Direct Connection</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Juniors don't know which senior holds the exact book or lab instrument they need, and chat messages get lost instantly.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="p-8 rounded-3xl bg-slate-900 text-white space-y-6">
+                    <h3 class="text-lg font-bold text-center">Visual Flow Comparison</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                            <span class="font-bold text-red-400">❌ Traditional Way</span>
+                            <p class="text-slate-300 leading-relaxed">Junior needs book ➔ Searches online stores ➔ Pays full retail price ➔ Senior's identical book sits idle in hostel.</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                            <span class="font-bold text-emerald-400">✅ ReSource Ecosystem</span>
+                            <p class="text-slate-300 leading-relaxed">Senior lists unused book ➔ ReSource matches junior ➔ Quick handoff at canteen ➔ Junior saves money & Senior frees space.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center pt-4">
+                    <button onclick="switchTab('explore')" class="px-6 py-3 rounded-xl bg-brand-600 text-white font-bold text-xs hover:bg-brand-700 transition">
+                        Explore Available Resources
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="view-explore" class="tab-view hidden py-8 sm:py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                
+                <!-- Explore Header -->
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200">
+                    <div class="space-y-1">
+                        <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">Live Campus Marketplace</span>
+                        <h2 class="text-3xl font-extrabold text-slate-900">Explore Academic Resources</h2>
+                        <p class="text-xs sm:text-sm text-slate-500">Filter books, lab gear, notes, and electronics by subject or category.</p>
+                    </div>
+
+                    <!-- Search Input Bar -->
+                    <div class="w-full md:w-80 relative">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="marketplace-search" placeholder="Search title, department, owner..." 
+                               class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-800 text-xs focus:outline-none focus:border-brand-500 transition placeholder:text-slate-400">
+                    </div>
+                </div>
+
+                <!-- Filters Strip -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    
+                    <!-- Categories Pills -->
+                    <div class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar text-xs font-semibold w-full sm:w-auto" id="category-filters">
+                        <button data-cat="All" class="cat-btn active px-4 py-2 rounded-xl bg-brand-600 text-white shrink-0 transition">All</button>
+                        <button data-cat="Books" class="cat-btn px-4 py-2 rounded-xl bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 shrink-0 transition">Books</button>
+                        <button data-cat="Notes" class="cat-btn px-4 py-2 rounded-xl bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 shrink-0 transition">Notes</button>
+                        <button data-cat="Electronics" class="cat-btn px-4 py-2 rounded-xl bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 shrink-0 transition">Electronics</button>
+                        <button data-cat="Lab Equipment" class="cat-btn px-4 py-2 rounded-xl bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 shrink-0 transition">Lab Gear</button>
+                    </div>
+
+                    <!-- Sharing Mode Dropdown -->
+                    <div class="flex items-center gap-2 text-xs shrink-0 self-end sm:self-auto">
+                        <span class="text-slate-500 font-semibold">Mode:</span>
+                        <select id="mode-filter" class="bg-white border border-slate-200 text-slate-700 text-xs font-semibold rounded-xl px-3 py-2 focus:outline-none focus:border-brand-500">
+                            <option value="All">All Modes</option>
+                            <option value="FREE">FREE</option>
+                            <option value="SELL">FOR SALE</option>
+                            <option value="EXCHANGE">SWAP</option>
+                            <option value="LEND">LEND</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <!-- Grid Output -->
+                <div id="marketplace-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-2">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty-state" class="hidden text-center py-16 space-y-3">
+                    <i data-lucide="package-open" class="w-10 h-10 text-slate-400 mx-auto"></i>
+                    <p class="text-slate-500 font-medium text-sm">No items found matching your search or category filter.</p>
+                    <button onclick="resetFilters()" class="text-xs font-bold text-brand-600 hover:underline">Reset All Filters</button>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="view-how" class="tab-view hidden py-10 sm:py-16">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 space-y-12">
+                
+                <div class="text-center space-y-2">
+                    <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">Process Overview</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900">How ReSource Works</h2>
+                    <p class="text-xs sm:text-sm text-slate-500">Four straightforward steps to share academic tools with total confidence.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="p-6 rounded-2xl classy-card space-y-3">
+                        <div class="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 font-extrabold text-sm flex items-center justify-center">01</div>
+                        <h3 class="font-bold text-slate-900 text-sm">Verify Campus Profile</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Sign up with your university email or student ID to access your verified campus community network.</p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl classy-card space-y-3">
+                        <div class="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 font-extrabold text-sm flex items-center justify-center">02</div>
+                        <h3 class="font-bold text-slate-900 text-sm">List or Discover Items</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Seniors post unused items in under a minute. Juniors filter by subject codes or mode (Free, Sale, Swap, Lend).</p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl classy-card space-y-3">
+                        <div class="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 font-extrabold text-sm flex items-center justify-center">03</div>
+                        <h3 class="font-bold text-slate-900 text-sm">Direct Peer Contact</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Connect directly via direct messaging or instant WhatsApp link to agree on handoff location and price.</p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl classy-card space-y-3">
+                        <div class="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 font-extrabold text-sm flex items-center justify-center">04</div>
+                        <h3 class="font-bold text-slate-900 text-sm">Meet & Exchange</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Meet safely at designated campus spots like the central library, lab building, or canteen to complete the transfer.</p>
+                    </div>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-slate-900 text-white flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div>
+                        <h4 class="font-bold text-sm">Ready to list an item?</h4>
+                        <p class="text-xs text-slate-400">Give your past semester books a second life today.</p>
+                    </div>
+                    <button onclick="openModal('list-modal')" class="px-5 py-2.5 rounded-xl bg-brand-600 font-bold text-xs text-white hover:bg-brand-500 transition">
+                        List Resource Now
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="view-trust" class="tab-view hidden py-10 sm:py-16">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 space-y-12">
+                
+                <div class="text-center space-y-2">
+                    <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">Safety Guidelines</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900">Campus Verification & Trust</h2>
+                    <p class="text-xs sm:text-sm text-slate-500">How we keep exchanges transparent, safe, and student-focused.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="p-6 rounded-2xl classy-card space-y-3">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-brand-600 flex items-center justify-center">
+                            <i data-lucide="shield-check" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-sm">College Email Verification</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Every account is linked to a valid university domain address to eliminate commercial spammers.</p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl classy-card space-y-3">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-brand-600 flex items-center justify-center">
+                            <i data-lucide="user-check" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-sm">Student Badges</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">See owner branch, year of study, and verified student badges before initiating a contact request.</p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl classy-card space-y-3">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-brand-600 flex items-center justify-center">
+                            <i data-lucide="map-pin" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-sm">Recommended Exchange Points</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Exchanges occur in public campus zones like the library foyer, departmental canteens, or hostel gates.</p>
+                    </div>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-brand-50 border border-brand-100 text-center space-y-2">
+                    <h4 class="font-bold text-brand-900 text-sm">100% Student Driven</h4>
+                    <p class="text-xs text-brand-700 max-w-xl mx-auto">
+                        ReSource never asks for bank passwords or transaction commissions. All cash or UPI transactions occur directly between students upon item inspection.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="view-impact" class="tab-view hidden py-10 sm:py-16">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 space-y-12">
+                
+                <div class="text-center space-y-2">
+                    <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Sustainability & Savings</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900">Campus Impact Matrix</h2>
+                    <p class="text-xs sm:text-sm text-slate-500">Reducing costs and paper waste across university departments.</p>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                    <div class="p-6 rounded-2xl classy-card space-y-1">
+                        <p class="text-3xl font-extrabold text-brand-600">2,500+</p>
+                        <p class="text-xs font-semibold text-slate-500">Students Joined</p>
+                    </div>
+                    <div class="p-6 rounded-2xl classy-card space-y-1">
+                        <p class="text-3xl font-extrabold text-emerald-600">1,200+</p>
+                        <p class="text-xs font-semibold text-slate-500">Items Reused</p>
+                    </div>
+                    <div class="p-6 rounded-2xl classy-card space-y-1">
+                        <p class="text-3xl font-extrabold text-brand-600">₹80,000+</p>
+                        <p class="text-xs font-semibold text-slate-500">Student Savings</p>
+                    </div>
+                    <div class="p-6 rounded-2xl classy-card space-y-1">
+                        <p class="text-3xl font-extrabold text-amber-600">700+</p>
+                        <p class="text-xs font-semibold text-slate-500">Books Saved</p>
+                    </div>
+                </div>
+
+                <!-- Circular Economy Flow -->
+                <div class="p-8 rounded-3xl classy-card text-center space-y-6">
+                    <h3 class="font-bold text-slate-900 text-base">The Circular Campus Economy</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs font-semibold">
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">1. Buy Less New</div>
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">2. Reuse More Gear</div>
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">3. Save Money</div>
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">4. Eliminate Waste</div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="view-dashboard" class="tab-view hidden py-10 sm:py-12">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 space-y-8">
+                
+                <!-- Dashboard Header -->
+                <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-xl">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-600 text-white flex items-center justify-center font-extrabold text-lg">
+                            RS
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-xl font-bold">Rahul Sharma</h2>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400">Verified Student</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-0.5">Computer Engineering • 3rd Year</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <div class="text-left sm:text-right text-xs">
+                            <span class="block text-slate-400">Total Money Saved</span>
+                            <span class="text-lg font-bold text-emerald-400">₹1,850</span>
+                        </div>
+                        <button onclick="openModal('list-modal')" class="px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 font-bold text-xs text-white transition flex items-center gap-1.5">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            New Listing
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dashboard Content -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    
+                    <div class="lg:col-span-4 space-y-2 text-xs font-semibold text-slate-600">
+                        <button onclick="switchDashSubTab('my-listings')" id="dtab-my-listings" class="dash-sub-tab active w-full flex items-center justify-between p-3.5 rounded-2xl bg-white border border-slate-200 text-brand-600 font-bold transition">
+                            <span class="flex items-center gap-2.5">
+                                <i data-lucide="package" class="w-4 h-4"></i> My Active Listings
+                            </span>
+                            <span class="px-2 py-0.5 rounded-full text-xs bg-brand-50 text-brand-600">2</span>
+                        </button>
+
+                        <button onclick="switchDashSubTab('saved')" id="dtab-saved" class="dash-sub-tab w-full flex items-center justify-between p-3.5 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition">
+                            <span class="flex items-center gap-2.5">
+                                <i data-lucide="bookmark" class="w-4 h-4"></i> Saved Bookmarks
+                            </span>
+                            <span class="px-2 py-0.5 rounded-full text-xs bg-slate-100 text-slate-600">1</span>
+                        </button>
+                    </div>
+
+                    <div class="lg:col-span-8">
+                        <div id="sub-panel-my-listings" class="dash-panel space-y-4">
+                            <div class="p-4 rounded-2xl bg-white border border-slate-200 flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-2xl">📐</span>
+                                    <div>
+                                        <h4 class="font-bold text-slate-900 text-xs sm:text-sm">Engineering Drawing Instrument Set</h4>
+                                        <p class="text-[11px] text-slate-500">Mode: Sale • Price: ₹150</p>
+                                    </div>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
+                            </div>
+
+                            <div class="p-4 rounded-2xl bg-white border border-slate-200 flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-2xl">💻</span>
+                                    <div>
+                                        <h4 class="font-bold text-slate-900 text-xs sm:text-sm">C++ Reference & DSA Handcrafted Notes</h4>
+                                        <p class="text-[11px] text-slate-500">Mode: Donation • Price: FREE</p>
+                                    </div>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
+                            </div>
+                        </div>
+
+                        <div id="sub-panel-saved" class="dash-panel hidden space-y-4">
+                            <div class="p-4 rounded-2xl bg-white border border-slate-200 flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-2xl">📘</span>
+                                    <div>
+                                        <h4 class="font-bold text-slate-900 text-xs sm:text-sm">Operating Systems Concepts (Silberschatz)</h4>
+                                        <p class="text-[11px] text-slate-500">₹300 • Seller: Vikram Rao</p>
+                                    </div>
+                                </div>
+                                <button onclick="showToast('Opening contact window...')" class="px-3 py-1.5 text-xs font-bold text-white bg-brand-600 rounded-xl">Contact</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <section id="view-roadmap" class="tab-view hidden py-10 sm:py-16">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 space-y-12">
+                
+                <div class="text-center space-y-2">
+                    <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">Presentation Blueprint</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900">Why ReSource & Roadmap</h2>
+                    <p class="text-xs sm:text-sm text-slate-500">How we outperform WhatsApp groups and scale across campuses.</p>
+                </div>
+
+                <!-- Comparison Matrix -->
+                <div class="p-6 rounded-3xl classy-card space-y-4">
+                    <h3 class="font-bold text-slate-900 text-sm border-b border-slate-100 pb-3">Differentiator Matrix</h3>
+                    
+                    <div class="space-y-3 text-xs">
+                        <div class="grid grid-cols-3 p-3 rounded-xl bg-slate-50 font-bold text-slate-700">
+                            <span>Feature</span>
+                            <span class="text-slate-500">WhatsApp Groups</span>
+                            <span class="text-brand-600">ReSource</span>
+                        </div>
+                        <div class="grid grid-cols-3 p-3 border-b border-slate-100">
+                            <span class="font-semibold text-slate-800">Searchability</span>
+                            <span class="text-slate-400">Hard / Easily Buried</span>
+                            <span class="text-emerald-600 font-bold">Instant Course Search</span>
+                        </div>
+                        <div class="grid grid-cols-3 p-3 border-b border-slate-100">
+                            <span class="font-semibold text-slate-800">Verification</span>
+                            <span class="text-slate-400">None / Random Numbers</span>
+                            <span class="text-emerald-600 font-bold">College Email Verified</span>
+                        </div>
+                        <div class="grid grid-cols-3 p-3 border-b border-slate-100">
+                            <span class="font-semibold text-slate-800">Sharing Modes</span>
+                            <span class="text-slate-400">Unclear / Negotiation</span>
+                            <span class="text-emerald-600 font-bold">Free, Sale, Swap, Lend</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5 Phase Roadmap -->
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-900 text-base text-center">Future Product Roadmap</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 text-center">
+                        <div class="p-4 rounded-2xl classy-card space-y-1">
+                            <span class="text-[10px] font-bold text-brand-600">PHASE 1</span>
+                            <h4 class="font-bold text-xs">Marketplace</h4>
+                            <p class="text-[10px] text-slate-500">Core campus sharing</p>
+                        </div>
+                        <div class="p-4 rounded-2xl classy-card space-y-1">
+                            <span class="text-[10px] font-bold text-brand-600">PHASE 2</span>
+                            <h4 class="font-bold text-xs">Verification</h4>
+                            <p class="text-[10px] text-slate-500">Edu email & ratings</p>
+                        </div>
+                        <div class="p-4 rounded-2xl classy-card space-y-1">
+                            <span class="text-[10px] font-bold text-brand-600">PHASE 3</span>
+                            <h4 class="font-bold text-xs">Bots & Alerts</h4>
+                            <p class="text-[10px] text-slate-500">WhatsApp integrations</p>
+                        </div>
+                        <div class="p-4 rounded-2xl classy-card space-y-1">
+                            <span class="text-[10px] font-bold text-brand-600">PHASE 4</span>
+                            <h4 class="font-bold text-xs">AI Match</h4>
+                            <p class="text-[10px] text-slate-500">Auto syllabus match</p>
+                        </div>
+                        <div class="p-4 rounded-2xl classy-card space-y-1">
+                            <span class="text-[10px] font-bold text-brand-600">PHASE 5</span>
+                            <h4 class="font-bold text-xs">Multi Campus</h4>
+                            <p class="text-[10px] text-slate-500">Inter-college network</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-8 text-xs text-slate-500 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <span class="font-extrabold text-slate-900">Re<span class="text-brand-600">Source</span></span>
+                <span>• Give It. Reuse It. Pass It On.</span>
+            </div>
+            <div class="flex items-center gap-4 text-xs font-semibold">
+                <button onclick="switchTab('explore')" class="hover:text-slate-900">Explore</button>
+                <button onclick="switchTab('how')" class="hover:text-slate-900">How It Works</button>
+                <button onclick="switchTab('trust')" class="hover:text-slate-900">Trust</button>
+                <button onclick="switchTab('impact')" class="hover:text-slate-900">Impact</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Detail Modal -->
+    <div id="detail-modal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 space-y-6 shadow-2xl relative border border-slate-200">
+            <button onclick="closeModal('detail-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div id="modal-detail-content" class="space-y-5"></div>
+        </div>
+    </div>
+
+    <!-- List Resource Modal -->
+    <div id="list-modal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl relative border border-slate-200 max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('list-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="space-y-1 pb-2 border-b border-slate-100">
+                <h3 class="text-xl font-extrabold text-slate-900">List an Academic Resource</h3>
+                <p class="text-xs text-slate-500">Post details to share with peers on your campus.</p>
+            </div>
+
+            <form id="add-resource-form" class="space-y-4 text-xs" onsubmit="handleFormSubmit(event)">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Resource Title *</label>
+                    <input type="text" id="form-title" required placeholder="e.g. Engineering Mathematics Vol II" 
+                           class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-brand-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Category *</label>
+                        <select id="form-category" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-brand-500">
+                            <option value="Books">Books</option>
+                            <option value="Notes">Notes & PYQs</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Lab Equipment">Lab Gear</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Sharing Mode *</label>
+                        <select id="form-mode" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-brand-500">
+                            <option value="FREE">Give for FREE</option>
+                            <option value="SELL">Sell</option>
+                            <option value="EXCHANGE">Swap</option>
+                            <option value="LEND">Lend</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Price / Terms</label>
+                        <input type="text" id="form-price" placeholder="FREE or ₹250" 
+                               class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-brand-500">
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Condition *</label>
+                        <select id="form-condition" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-brand-500">
+                            <option value="Like New">Like New</option>
+                            <option value="Good">Good</option>
+                            <option value="Handwritten">Handwritten / Digital</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Your Name *</label>
+                        <input type="text" id="form-owner" required placeholder="e.g. Rahul S." 
+                               class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-brand-500">
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Department *</label>
+                        <input type="text" id="form-dept" required placeholder="e.g. Computer Eng." 
+                               class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-brand-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Description</label>
+                    <textarea id="form-desc" rows="2" placeholder="Subject details, meeting spot..." 
+                              class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-brand-500"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3 rounded-xl font-bold text-white bg-brand-600 hover:bg-brand-700 transition">
+                    Publish Resource
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-5 shadow-2xl relative border border-slate-200">
+            <button onclick="closeModal('auth-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="text-center space-y-1">
+                <h3 class="text-xl font-extrabold text-slate-900">Campus Verification</h3>
+                <p class="text-xs text-slate-500">Sign in with student credentials.</p>
+            </div>
+
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">College Email</label>
+                    <input type="email" placeholder="student@university.edu" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Password</label>
+                    <input type="password" placeholder="••••••••" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-brand-500">
+                </div>
+                <button onclick="showToast('Logged in successfully!'); closeModal('auth-modal')" class="w-full py-2.5 rounded-xl font-bold text-white bg-brand-600 hover:bg-brand-700 transition">
+                    Sign In
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const initialResources = [
+            {
+                id: 1,
+                title: "Engineering Mathematics — 2nd Edition",
+                category: "Books",
+                mode: "SELL",
+                price: "₹250",
+                condition: "Like New",
+                owner: "Rahul S.",
+                year: "3rd Year",
+                dept: "Computer Eng.",
+                icon: "📚",
+                desc: "Standard textbook for M2 course with solved question papers included."
+            },
+            {
+                id: 2,
+                title: "Scientific Calculator FX-991EX",
+                category: "Electronics",
+                mode: "SELL",
+                price: "₹400",
+                condition: "Good",
+                owner: "Ananya V.",
+                year: "4th Year",
+                dept: "Electronics & Comm",
+                icon: "🔢",
+                desc: "552 functions scientific calculator. Batteries newly replaced."
+            },
+            {
+                id: 3,
+                title: "DBMS Complete Course Notes & PYQs",
+                category: "Notes",
+                mode: "FREE",
+                price: "FREE",
+                condition: "Handwritten",
+                owner: "Arjun P.",
+                year: "4th Year",
+                dept: "Computer Eng.",
+                icon: "📝",
+                desc: "Comprehensive database management notes along with 5 years solved university papers."
+            },
+            {
+                id: 4,
+                title: "Arduino Uno Starter Kit + Sensors",
+                category: "Electronics",
+                mode: "LEND",
+                price: "Lend (1 Semester)",
+                condition: "Good",
+                owner: "Priya S.",
+                year: "4th Year",
+                dept: "Robotics & Automation",
+                icon: "⚡",
+                desc: "Original Arduino board with ultrasonic sensors, breadboard, and jumper wires."
+            },
+            {
+                id: 5,
+                title: "Mechanical Solved PYQs (Last 5 Years)",
+                category: "Notes",
+                mode: "FREE",
+                price: "FREE Digital PDF",
+                condition: "Digital PDF",
+                owner: "Senior Club",
+                year: "Senior Assoc.",
+                dept: "Mechanical Eng.",
+                icon: "📂",
+                desc: "Official compiled answer sheets for semester end exams."
+            },
+            {
+                id: 6,
+                title: "Engineering Drawing Instrument Set",
+                category: "Lab Equipment",
+                mode: "SELL",
+                price: "₹150",
+                condition: "Like New",
+                owner: "Aman G.",
+                year: "3rd Year",
+                dept: "Civil Eng.",
+                icon: "📐",
+                desc: "Includes mini drafter, compass box, and drafting scales in protective case."
+            }
+        ];
+
+        let resources = [...initialResources];
+        let activeCategory = "All";
+        let activeMode = "All";
+
+        function switchTab(tabId) {
+            document.querySelectorAll(".tab-view").forEach(el => el.classList.add("hidden"));
+            document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
+
+            const targetView = document.getElementById("view-" + tabId);
+            const targetNav = document.getElementById("nav-" + tabId);
+
+            if (targetView) targetView.classList.remove("hidden");
+            if (targetNav) targetNav.classList.add("active");
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById("mobile-menu").classList.toggle("hidden");
+        }
+
+        function switchDashSubTab(subId) {
+            document.querySelectorAll(".dash-panel").forEach(el => el.classList.add("hidden"));
+            document.querySelectorAll(".dash-sub-tab").forEach(el => {
+                el.classList.remove("bg-white", "text-brand-600", "font-bold");
+                el.classList.add("text-slate-700");
+            });
+
+            document.getElementById("sub-panel-" + subId).classList.remove("hidden");
+            const activeBtn = document.getElementById("dtab-" + subId);
+            activeBtn.classList.add("bg-white", "text-brand-600", "font-bold");
+        }
+
+        function renderMarketplace() {
+            const grid = document.getElementById("marketplace-grid");
+            const homePreview = document.getElementById("home-marketplace-preview");
+            const emptyState = document.getElementById("empty-state");
+            const searchVal = (document.getElementById("marketplace-search")?.value || "").toLowerCase();
+
+            if (grid) grid.innerHTML = "";
+            if (homePreview) homePreview.innerHTML = "";
+
+            const filtered = resources.filter(item => {
+                const matchesCat = (activeCategory === "All") || (item.category === activeCategory);
+                const matchesMode = (activeMode === "All") || (item.mode === activeMode);
+                const matchesSearch = item.title.toLowerCase().includes(searchVal) || 
+                                      item.dept.toLowerCase().includes(searchVal) ||
+                                      item.owner.toLowerCase().includes(searchVal);
+                return matchesCat && matchesMode && matchesSearch;
+            });
+
+            // Populate Home Page Preview Grid (first 3 items)
+            if (homePreview) {
+                resources.slice(0, 3).forEach(item => {
+                    let badgeBg = "bg-brand-50 text-brand-600 border-brand-200";
+                    if (item.mode === "FREE") badgeBg = "bg-emerald-50 text-emerald-600 border-emerald-200";
+
+                    const card = document.createElement("div");
+                    card.className = "classy-card rounded-2xl p-4 space-y-3";
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${badgeBg}">${item.mode} • ${item.price}</span>
+                            <span class="text-lg">${item.icon}</span>
+                        </div>
+                        <h4 class="font-bold text-xs text-slate-900 line-clamp-1">${item.title}</h4>
+                        <p class="text-[11px] text-slate-500">Owner: ${item.owner} (${item.dept})</p>
+                    `;
+                    homePreview.appendChild(card);
+                });
+            }
+
+            if (filtered.length === 0) {
+                if (emptyState) emptyState.classList.remove("hidden");
+            } else {
+                if (emptyState) emptyState.classList.add("hidden");
+                
+                filtered.forEach(item => {
+                    let badgeBg = "bg-brand-50 text-brand-600 border-brand-200";
+                    if (item.mode === "FREE") badgeBg = "bg-emerald-50 text-emerald-600 border-emerald-200";
+                    if (item.mode === "SELL") badgeBg = "bg-blue-50 text-blue-600 border-blue-200";
+                    if (item.mode === "EXCHANGE") badgeBg = "bg-purple-50 text-purple-600 border-purple-200";
+
+                    const card = document.createElement("div");
+                    card.className = "classy-card rounded-2xl p-5 space-y-4 flex flex-col justify-between";
+                    
+                    card.innerHTML = `
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${badgeBg}">
+                                    ${item.mode} • ${item.price}
+                                </span>
+                                <span class="text-xl">${item.icon}</span>
+                            </div>
+
+                            <h3 class="font-bold text-xs sm:text-sm text-slate-900 line-clamp-2">
+                                ${item.title}
+                            </h3>
+
+                            <div class="space-y-1 text-xs text-slate-500">
+                                <p>Condition: <span class="text-slate-800 font-medium">${item.condition}</span></p>
+                                <p>Owner: <span class="text-slate-800 font-medium">${item.owner}</span></p>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                            <span class="text-[11px] font-medium text-slate-400 truncate">${item.dept}</span>
+                            <button onclick="openDetailModal(${item.id})" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 transition">
+                                Details
+                            </button>
+                        </div>
+                    `;
+                    if (grid) grid.appendChild(card);
+                });
+            }
+            
+            lucide.createIcons();
+        }
+
+        function openDetailModal(id) {
+            const item = resources.find(r => r.id === id);
+            if (!item) return;
+
+            const container = document.getElementById("modal-detail-content");
+            container.innerHTML = `
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-brand-50 text-brand-600">
+                            ${item.category} • ${item.mode}
+                        </span>
+                        <h3 class="text-lg font-bold text-slate-900 mt-2">${item.title}</h3>
+                    </div>
+                    <span class="text-3xl">${item.icon}</span>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-50 space-y-2 text-xs text-slate-600 border border-slate-100">
+                    <div class="flex justify-between">
+                        <span>Price:</span>
+                        <span class="font-bold text-brand-600">${item.price}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Condition:</span>
+                        <span class="font-bold text-slate-800">${item.condition}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Owner:</span>
+                        <span class="font-bold text-slate-800">${item.owner} (${item.dept})</span>
+                    </div>
+                </div>
+
+                <p class="text-xs text-slate-500 leading-relaxed">${item.desc}</p>
+
+                <button onclick="showToast('Initiating chat with ${item.owner}...'); closeModal('detail-modal')" class="w-full py-2.5 rounded-xl font-bold text-xs text-white bg-brand-600 hover:bg-brand-700 transition">
+                    Contact Owner
+                </button>
+            `;
+            
+            openModal('detail-modal');
+            lucide.createIcons();
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const newItem = {
+                id: Date.now(),
+                title: document.getElementById("form-title").value,
+                category: document.getElementById("form-category").value,
+                mode: document.getElementById("form-mode").value,
+                price: document.getElementById("form-price").value || "FREE",
+                condition: document.getElementById("form-condition").value,
+                owner: document.getElementById("form-owner").value,
+                year: "Senior",
+                dept: document.getElementById("form-dept").value,
+                icon: "📦",
+                desc: document.getElementById("form-desc").value || "Listed by student via ReSource."
+            };
+
+            resources.unshift(newItem);
+            renderMarketplace();
+            closeModal('list-modal');
+            document.getElementById("add-resource-form").reset();
+            showToast("Resource published to marketplace!");
+            switchTab('explore');
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById("toast-container");
+            const toast = document.createElement("div");
+            toast.className = "bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl text-xs font-semibold flex items-center gap-2 pointer-events-auto transition-all duration-300";
+            toast.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> <span>${msg}</span>`;
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function openModal(id) { document.getElementById(id).classList.remove("hidden"); }
+        function closeModal(id) { document.getElementById(id).classList.add("hidden"); }
+
+        function resetFilters() {
+            activeCategory = "All";
+            activeMode = "All";
+            if (document.getElementById("marketplace-search")) document.getElementById("marketplace-search").value = "";
+            if (document.getElementById("mode-filter")) document.getElementById("mode-filter").value = "All";
+            document.querySelectorAll(".cat-btn").forEach(btn => {
+                btn.classList.remove("bg-brand-600", "text-white");
+                btn.classList.add("bg-white", "text-slate-600");
+            });
+            renderMarketplace();
+        }
+
+        window.onload = function() {
+            lucide.createIcons();
+            renderMarketplace();
+
+            document.querySelectorAll(".cat-btn").forEach(btn => {
+                btn.addEventListener("click", function() {
+                    document.querySelectorAll(".cat-btn").forEach(b => {
+                        b.classList.remove("bg-brand-600", "text-white");
+                        b.classList.add("bg-white", "text-slate-600");
+                    });
+                    this.classList.add("bg-brand-600", "text-white");
+                    this.classList.remove("bg-white", "text-slate-600");
+                    activeCategory = this.getAttribute("data-cat");
+                    renderMarketplace();
+                });
+            });
+
+            document.getElementById("marketplace-search")?.addEventListener("input", renderMarketplace);
+            document.getElementById("mode-filter")?.addEventListener("change", function() {
+                activeMode = this.value;
+                renderMarketplace();
+            });
+
+            document.getElementById("mobile-menu-btn")?.addEventListener("click", toggleMobileMenu);
+        };
+    </script>
+</body>
+</html>
